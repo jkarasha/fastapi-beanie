@@ -1,16 +1,17 @@
 import motor.motor_asyncio
-from beanie import init_beanie
+from beanie import Document
 
-from .models.product_review import ProductReview
+from fastapi_users.db import BeanieBaseUser
+from fastapi_users_db_beanie import BeanieUserDatabase
 
-async def init_db():
-    # Create Motor client
-    client = motor.motor_asyncio.AsyncIOMotorClient(
-        "mongodb://localhost:27017/productreviews"
-    )
+DATABASE_URL = "mongodb://localhost:27017"
 
-    # Initialize beanie with the Product Review document class
-    await init_beanie(
-        database=client.product_reviews_db,
-        document_models=[ProductReview]
-    )
+client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URL, uuidRepresentation="standard")
+
+db = client["productreviews"]
+
+class User(BeanieBaseUser, Document):
+    pass
+
+async def get_user_db():
+    yield BeanieUserDatabase(User)
