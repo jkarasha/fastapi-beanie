@@ -13,6 +13,7 @@ async def lifespan(app: FastAPI):
     await init_beanie(
         database=db,
         document_models=[User,],
+        skip_indexes=True,
     )
     yield
 
